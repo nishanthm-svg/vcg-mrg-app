@@ -50,7 +50,7 @@
           <div class="header h1" id="dashTitle" style="font-size:16px;font-weight:700;color:white"></div>
           <div class="header-sub" id="dashSubtitle"></div>
         </div>
-        <button onclick="App.showConfig()" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:12px">⚙ Setup</button>
+        <button onclick="App.showConfig()" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:12px">⚙ Settings</button>
         <button onclick="App.logout()" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:12px;margin-left:6px">Exit</button>
       </div>
       <div class="sync-status" id="syncStatus">
@@ -86,6 +86,14 @@
         <div class="progress-label">
           <span id="progressDetail"></span>
         </div>
+      </div>
+    </div>
+
+    <!-- BMCU Progress Dashboard -->
+    <div id="bmcuProgressSection" style="padding:0 16px 8px;display:none">
+      <div style="background:white;border-radius:10px;padding:14px 16px;box-shadow:var(--shadow)">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">📊 Progress by BMCU</div>
+        <div id="bmcuProgressList"></div>
       </div>
     </div>
 
@@ -153,6 +161,7 @@
         <input type="text" id="memberSearch" placeholder="Search member name..." oninput="App.searchMembers()">
       </div>
     </div>
+    <div id="memberCount" style="padding:4px 16px 0;font-size:12px;color:var(--text-muted)"></div>
 
     <div class="list-container" id="memberList">
       <div class="loader-wrap"><div class="spinner"></div></div>
@@ -270,8 +279,7 @@
     <div class="config-card">
       <h3>🔗 Google Sheets Integration</h3>
       <p class="config-note">
-        To sync data to Google Sheets, paste your <strong>Google Apps Script Web App URL</strong> below.
-        Follow the setup guide (setup-guide.html) to deploy the script.
+        <strong>✅ Setup is NOT required.</strong> The app works offline and syncs automatically using the pre-configured Google Sheets link. This section is only needed if you want to connect a different Google Sheet.
       </p>
       <div class="form-group">
         <label>Apps Script URL</label>

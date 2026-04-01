@@ -283,7 +283,7 @@ const App = (() => {
     document.getElementById('dashTitle').textContent = execName;
     const mpps = state.execData.mpps;
     const completedMPPs = mpps.filter(m => isMPPCompleted(m)).length;
-    const totalIdents = Object.keys(state.identifications).length;
+    const totalIdents = Object.keys(state.identifications).filter(k => state.identifications[k]).length;
 
     document.getElementById('dashSubtitle').textContent = `VCG/MRG Identification 2025`;
     document.getElementById('statTotalMPP').textContent = mpps.length;
@@ -294,6 +294,39 @@ const App = (() => {
     document.getElementById('progressPct').textContent = pct + '%';
     document.getElementById('progressBar').style.width = pct + '%';
     document.getElementById('progressDetail').textContent = `${completedMPPs} of ${mpps.length} MPPs completed`;
+
+    renderBMCUProgress();
+  }
+
+  function renderBMCUProgress() {
+    const section = document.getElementById('bmcuProgressSection');
+    const container = document.getElementById('bmcuProgressList');
+    if (!section || !container || !state.execData) return;
+
+    const bmcus = state.execData.bmcus || [];
+    if (!bmcus.length) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+
+    container.innerHTML = bmcus.map(bmcu => {
+      const allMembers = bmcu.mpps.reduce((acc, m) => acc + m.memberCount, 0);
+      const identCount = bmcu.mpps.reduce((acc, mpp) => {
+        return acc + mpp.members.filter(m => state.identifications[m.unkey]).length;
+      }, 0);
+      const doneMPPs = bmcu.mpps.filter(mpp => isMPPCompleted(mpp)).length;
+      const pct = allMembers ? Math.round((identCount / allMembers) * 100) : 0;
+      const barColor = pct === 100 ? '#2e7d32' : pct > 50 ? '#1a237e' : '#ff6f00';
+
+      return `
+        <div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">${bmcu.bmcuName}</div>
+            <div style="font-size:12px;color:var(--text-muted)">${doneMPPs}/${bmcu.totalMPPs} MPPs &bull; ${identCount} identified</div>
+          </div>
+          <div style="height:6px;background:#f0f2f5;border-radius:99px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:${barColor};border-radius:99px;transition:width 0.3s"></div>
+          </div>
+        </div>`;
+    }).join('');
   }
 
   function isMPPCompleted(mpp) {
@@ -452,9 +485,10 @@ const App = (() => {
     if (!state.currentMPP) return;
     const search = document.getElementById('memberSearch').value.toLowerCase();
     const filter = state.memberFilter;
+    const allMembers = state.currentMPP.members;
 
-    let members = state.currentMPP.members.filter(m => {
-      const matchSearch = !search || m.memberName.toLowerCase().includes(search) || m.memberCode.toLowerCase().includes(search);
+    let members = allMembers.filter(m => {
+      const matchSearch = !search || m.memberName.toLowerCase().includes(search) || String(m.memberCode).toLowerCase().includes(search);
       const ident = state.identifications[m.unkey];
       const matchFilter =
         filter === 'all' ||
@@ -465,7 +499,26 @@ const App = (() => {
       return matchSearch && matchFilter;
     });
 
+    const countEl = document.getElementById('memberCount');
+    if (countEl) {
+      const identCount = allMembers.filter(m => state.identifications[m.unkey]).length;
+      const pendingCount = allMembers.length - identCount;
+      const priorityCount = allMembers.filter(m => m.priority === 1).length;
+      const vcgmrgCount = allMembers.filter(m => m.vcgMrg === 'VCG' || m.vcgMrg === 'MRG').length;
+      const labels = {
+        all: `Showing all ${members.length} members`,
+        priority: `⭐ ${members.length} priority members (200D+500L)`,
+        vcgmrg: `🏆 ${members.length} last FY VCG/MRG members`,
+        identified: `✅ ${members.length} identified`,
+        pending: `⏳ ${members.length} pending`,
+      };
+      countEl.textContent = labels[filter] || `${members.length} members`;
+    }
+
     renderMemberList(members);
+    // Scroll member list into view
+    const listEl = document.getElementById('memberList');
+    if (listEl) listEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   // ---- Identification Modal ----
@@ -763,7 +816,7 @@ const App = (() => {
               <div class="member-stats">
                 <div class="member-stat">👤 <strong>${i.executive}</strong></div>
                 <div class="member-stat">📅 <strong>${date}</strong></div>
-                <div class="member-stat">${syncIcon} Form: ${i.formNo}</div>
+                <div class="member-stat">${syncIcon} ${i.synced ? 'Synced' : 'Local only'}</div>
               </div>
             </div>
           </div>
@@ -782,11 +835,11 @@ const App = (() => {
   // ---- Export ----
   function exportCSV() {
     if (!state.submissions.length) { showToast('No data to export'); return; }
-    const headers = ['Unkey','Executive','MPP Code','MPP Name','Member Code','Member Name','ACO','Plant','Type','Form No','Meeting Date','Group Members','Total Days','Total Qty','Last FY VCG/MRG','Submitted At','Synced'];
+    const headers = ['Unkey','Executive','BMCU Name','MPP Code','MPP Name','Member Code','Member Name','ACO','Plant','Type','Total Days','Total Qty','Last FY VCG/MRG','Remarks','Submitted At','Synced'];
     const rows = state.submissions.map(i => [
-      i.unkey, i.executive, i.mppCode, i.mppName, i.memberCode, i.memberName,
-      i.acoName, i.plantCode, i.type, i.formNo, i.meetingDate, i.groupMembers,
-      i.totalDays, i.totalQty, i.lastFYVCGMRG, i.submittedAt, i.synced ? 'Yes' : 'No'
+      i.unkey, i.executive, i.bmcuName, i.mppCode, i.mppName, i.memberCode, i.memberName,
+      i.acoName, i.plantCode, i.type,
+      i.totalDays, i.totalQty, i.lastFYVCGMRG, i.remarks, i.submittedAt, i.synced ? 'Yes' : 'No'
     ]);
 
     const csv = [headers, ...rows].map(r => r.map(v => `"${v||''}"`).join(',')).join('\n');
@@ -874,12 +927,10 @@ const App = (() => {
     const pending = await dbGetAll('pending');
     for (const item of pending) {
       try {
-        const res = await fetch(state.gasUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'submit', data: item.data })
-        });
-        if (res.ok) {
+        const params = new URLSearchParams({ action: 'submit', data: JSON.stringify(item.data) });
+        const res = await fetch(`${state.gasUrl}?${params}`);
+        const json = await res.json();
+        if (json.status === 'ok') {
           const tx = db.transaction('pending', 'readwrite');
           tx.objectStore('pending').delete(item.id);
         }
