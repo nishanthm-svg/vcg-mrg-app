@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VCG/MRG App – Setup Guide</title>
+<style>
+  body { font-family: 'Segoe UI', sans-serif; max-width: 800px; margin: 0 auto; padding: 24px; color: #1a1a2e; line-height: 1.7; }
+  h1 { color: #1a237e; border-bottom: 3px solid #1a237e; padding-bottom: 12px; }
+  h2 { color: #3949ab; margin-top: 32px; }
+  h3 { color: #546e7a; }
+  .step { background: #f8f9fa; border-left: 4px solid #1a237e; padding: 16px 20px; margin: 16px 0; border-radius: 0 8px 8px 0; }
+  .step-num { display: inline-block; background: #1a237e; color: white; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-weight: 700; margin-right: 8px; font-size: 14px; }
+  code { background: #e8eaf6; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 13px; }
+  pre { background: #1a1a2e; color: #e8eaf6; padding: 16px; border-radius: 8px; overflow-x: auto; font-size: 13px; }
+  .warning { background: #fff3e0; border-left: 4px solid #ff6f00; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+  .success { background: #e8f5e9; border-left: 4px solid #2e7d32; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  th { background: #1a237e; color: white; padding: 10px 14px; text-align: left; }
+  td { padding: 10px 14px; border-bottom: 1px solid #e0e0e0; }
+  tr:nth-child(even) { background: #f8f9fa; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+  .badge.vcg { background: #f3e5f5; color: #6a1b9a; }
+  .badge.mrg { background: #e0f2f1; color: #00695c; }
+  .badge.priority { background: #fff3e0; color: #e65100; }
+</style>
+</head>
+<body>
+
+<h1>🥛 VCG/MRG Identification App – Complete Setup Guide</h1>
+
+<div class="success">
+  <strong>✅ App is ready!</strong> Follow the steps below to set up Google Sheets sync and deploy the app on mobile devices.
+</div>
+
+<h2>📱 Part 1: Running the App on Mobile</h2>
+
+<h3>Option A: Share as a file (simplest)</h3>
+<div class="step">
+  <span class="step-num">1</span> Copy the entire <code>vcg-mrg-app</code> folder to a shared location (Google Drive, WhatsApp, etc.)<br><br>
+  <span class="step-num">2</span> On Android: Open Chrome → Navigate to the <code>index.html</code> file → Tap ⋮ menu → <strong>"Add to Home Screen"</strong><br><br>
+  <span class="step-num">3</span> On iPhone: Open Safari → Open the <code>index.html</code> → Tap Share → <strong>"Add to Home Screen"</strong>
+</div>
+
+<h3>Option B: Host on Google Drive (recommended for team)</h3>
+<div class="step">
+  <span class="step-num">1</span> Upload the <code>vcg-mrg-app</code> folder to Google Drive<br><br>
+  <span class="step-num">2</span> Right-click <code>index.html</code> → Share → <strong>Anyone with link</strong> → Copy link<br><br>
+  <span class="step-num">3</span> Share the link with all field executives via WhatsApp<br><br>
+  <span class="step-num">4</span> Open in Chrome on phone → Add to Home Screen
+</div>
+
+<h3>Option C: Host on GitHub Pages (free, permanent URL)</h3>
+<div class="step">
+  <span class="step-num">1</span> Create a free GitHub account at github.com<br>
+  <span class="step-num">2</span> New repository → Upload the <code>vcg-mrg-app</code> folder<br>
+  <span class="step-num">3</span> Settings → Pages → Source: main branch → Save<br>
+  <span class="step-num">4</span> App URL: <code>https://yourusername.github.io/vcg-mrg-app/</code><br>
+  <span class="step-num">5</span> Share this URL with all executives. Works on any phone!
+</div>
+
+<h2>☁️ Part 2: Google Sheets Sync Setup</h2>
+<p>This enables all field data to automatically sync to a central Google Sheet viewable by admin.</p>
+
+<div class="step">
+  <span class="step-num">1</span> Go to <a href="https://sheets.google.com" target="_blank">sheets.google.com</a> and create a <strong>new spreadsheet</strong>. Name it <strong>"VCG MRG Identifications 2025"</strong>
+</div>
+
+<div class="step">
+  <span class="step-num">2</span> Copy the <strong>Spreadsheet ID</strong> from the URL:<br>
+  <code>https://docs.google.com/spreadsheets/d/<strong>YOUR_ID_HERE</strong>/edit</code>
+</div>
+
+<div class="step">
+  <span class="step-num">3</span> Go to <a href="https://script.google.com" target="_blank">script.google.com</a> → <strong>New Project</strong>
+</div>
+
+<div class="step">
+  <span class="step-num">4</span> Delete the default code and paste the entire contents of <code>google-apps-script.js</code><br><br>
+  Replace <code>YOUR_GOOGLE_SHEET_ID_HERE</code> with your actual Spreadsheet ID
+</div>
+
+<div class="step">
+  <span class="step-num">5</span> Click <strong>Deploy → New Deployment</strong><br>
+  &bull; Type: <strong>Web App</strong><br>
+  &bull; Execute as: <strong>Me</strong><br>
+  &bull; Who has access: <strong>Anyone</strong><br>
+  &bull; Click <strong>Deploy</strong> → Authorize → Copy the <strong>Web App URL</strong>
+</div>
+
+<div class="step">
+  <span class="step-num">6</span> In the app, go to <strong>⚙ Setup</strong> → Paste the Web App URL → Save
+</div>
+
+<div class="success">
+  <strong>✅ Done!</strong> Every identification submitted by field executives will now automatically appear in your Google Sheet.
+</div>
+
+<h2>🔑 Part 3: Default Login Passwords</h2>
+<div class="warning">
+  <strong>⚠ Share these passwords only with the respective executives. Ask them to change their password after first login.</strong>
+</div>
+
+<table>
+  <tr><th>Executive Name</th><th>Default Password</th><th>Change in App?</th></tr>
+  <tr><td>R VIJAY KUMAR</td><td><code>vijay1234</code></td><td>Yes – ⚙ Setup → Change Password</td></tr>
+  <tr><td>N MOHAN</td><td><code>mohan1234</code></td><td>Yes</td></tr>
+  <tr><td>C NIROSHA</td><td><code>niro1234</code></td><td>Yes</td></tr>
+  <tr><td>N MURALI</td><td><code>mural1234</code></td><td>Yes</td></tr>
+  <tr><td>G HARI</td><td><code>hari1234</code></td><td>Yes</td></tr>
+  <tr><td>T GOVARDHAN REDDY</td><td><code>govd1234</code></td><td>Yes</td></tr>
+  <tr><td>C MANOJ</td><td><code>mano1234</code></td><td>Yes</td></tr>
+  <tr><td>A RAGHUNATH</td><td><code>ragh1234</code></td><td>Yes</td></tr>
+  <tr><td>Y NAGHABHUSHAN</td><td><code>nagh1234</code></td><td>Yes</td></tr>
+  <tr><td>T SAHADEVA REDDY</td><td><code>saha1234</code></td><td>Yes</td></tr>
+  <tr><td>M SANKAR</td><td><code>sank1234</code></td><td>Yes</td></tr>
+  <tr><td>T MARUTHI PRASAD</td><td><code>maru1234</code></td><td>Yes</td></tr>
+  <tr><td>D KESAVA</td><td><code>kesa1234</code></td><td>Yes</td></tr>
+  <tr><td>S NARESH</td><td><code>nare1234</code></td><td>Yes</td></tr>
+  <tr><td>M GANGADHAR</td><td><code>gang1234</code></td><td>Yes</td></tr>
+  <tr><td>RANJITH KUMAR</td><td><code>ranj1234</code></td><td>Yes</td></tr>
+  <tr><td>G MAHESH</td><td><code>mahe1234</code></td><td>Yes</td></tr>
+  <tr><td><strong>Admin</strong></td><td><code>admin@2025</code></td><td>Contact developer</td></tr>
+</table>
+
+<h2>📊 Part 4: Understanding the App</h2>
+
+<h3>Member Priority System</h3>
+<table>
+  <tr><th>Badge</th><th>Criteria</th><th>Meaning</th></tr>
+  <tr>
+    <td><span class="badge priority">⭐ 200D+500L Priority</span></td>
+    <td>Total Days ≥ 200 AND Total Qty ≥ 500 litres</td>
+    <td>Shown FIRST in member list. These are the primary targets.</td>
+  </tr>
+  <tr>
+    <td><span class="badge vcg">🏆 Last FY VCG</span></td>
+    <td>VCG column = "VCG" in source data</td>
+    <td>Was a VCG member last financial year</td>
+  </tr>
+  <tr>
+    <td><span class="badge mrg">🏅 Last FY MRG</span></td>
+    <td>VCG column = "MRG" in source data</td>
+    <td>Was an MRG member last financial year</td>
+  </tr>
+</table>
+
+<h3>Identification Types</h3>
+<table>
+  <tr><th>Type</th><th>Full Form</th><th>Color</th></tr>
+  <tr><td><span class="badge vcg">VCG</span></td><td>Village Contact Group</td><td>Purple theme</td></tr>
+  <tr><td><span class="badge mrg">MRG</span></td><td>Member Relation Group</td><td>Teal theme</td></tr>
+</table>
+
+<h3>Offline Capability</h3>
+<div class="success">
+  The app works <strong>100% offline</strong>. All data is saved locally on the device. When internet is available, it automatically syncs to Google Sheets. The sync status is shown at the top of the dashboard.
+</div>
+
+<h3>Data Flow</h3>
+<pre>
+Executive's Phone
+     ↓ (fills form)
+IndexedDB (local storage)
+     ↓ (auto-sync when online)
+Google Apps Script (API)
+     ↓
+Google Sheets (central database)
+     ↓
+Admin Dashboard (real-time view)
+</pre>
+
+<h2>📁 Part 5: File Structure</h2>
+<pre>
+vcg-mrg-app/
+├── index.html          → Main app (open this on phone)
+├── app.js              → App logic
+├── styles.css          → UI styles
+├── sw.js               → Service worker (offline support)
+├── manifest.json       → PWA manifest (install on home screen)
+├── setup-guide.html    → This guide
+├── google-apps-script.js → Deploy to Google Apps Script
+└── data/
+    ├── executives.json      → Executive + MPP index
+    ├── exec_R_VIJAY_KUMAR.json
+    ├── exec_N_MOHAN.json
+    └── ... (one file per executive)
+</pre>
+
+<h2>🆘 Troubleshooting</h2>
+<table>
+  <tr><th>Problem</th><th>Solution</th></tr>
+  <tr><td>App not loading on phone</td><td>Use Chrome browser (not Samsung browser). Open index.html directly.</td></tr>
+  <tr><td>Data not syncing</td><td>Check internet connection. Go to ⚙ Setup → verify GAS URL is saved.</td></tr>
+  <tr><td>Wrong password</td><td>Admin can reset passwords in Google Sheet or contact developer.</td></tr>
+  <tr><td>MPP list not showing</td><td>Ensure the <code>data/</code> folder is in the same directory as index.html.</td></tr>
+  <tr><td>Google Apps Script error</td><td>Re-deploy as new version. Make sure "Anyone" has access.</td></tr>
+</table>
+
+<hr>
+<p style="text-align:center;color:#999;font-size:13px">VCG/MRG Identification App v1.0 | Built for field team use | April 2025</p>
+</body>
+</html>
