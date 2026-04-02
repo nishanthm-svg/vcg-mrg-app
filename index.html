@@ -10,6 +10,15 @@
   <meta name="apple-mobile-web-app-title" content="VCG-MRG" />
   <title>VCG / MRG Identification</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🥛</text></svg>" />
+  <!-- Unregister old service workers so new React app loads fresh -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        regs.forEach(r => r.unregister())
+      })
+      caches.keys().then(keys => keys.forEach(k => caches.delete(k)))
+    }
+  </script>
   <script type="module" crossorigin src="/vcg-mrg-app/assets/index-B54_Mblz.js"></script>
   <link rel="modulepreload" crossorigin href="/vcg-mrg-app/assets/three-vendor-0cGdt2JT.js">
   <link rel="stylesheet" crossorigin href="/vcg-mrg-app/assets/index-MkTKpgpq.css">
